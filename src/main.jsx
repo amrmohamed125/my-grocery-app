@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/my-grocery-app">
+    <BrowserRouter>
       <CartProvider>
         <App />
       </CartProvider>
