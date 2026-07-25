@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:3YHz7iIuYDmKXCXA@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
 const cors = require('cors');
 const product = require('./models/Product');
 const cartRouters = require('./routers/cartRoutes');
@@ -12,9 +12,9 @@ app.use(express.json());
 app.use('/api/cart', cartRouters);
 app.use('/api/auth', authRoutes);
 
-mongoose.connect('mongodb://127.0.0.1:27017/my-grocery-app')
-.then(() => console.log('✅ Connected to MongoDB'))
-.catch(err => console.log('❌ DB Connection Error:', err));
+mongoose.connect(MONGO_URI)
+  .then(() => console.log(' Connected to MongoDB Atlas'))
+  .catch(err => console.log(' DB Connection Error:', err));
 
 app.get('/api/products', async (req, res) => {
     const { page } = req.query;

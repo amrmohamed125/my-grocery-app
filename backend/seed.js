@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:3YHz7iIuYDmKXCXA@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
 const Product = require('./models/Product');
 
-mongoose.connect('mongodb://127.0.0.1:27017/my-grocery-app')
-  .then(() => console.log('🟩 Connected to MongoDB for seeding...'))
-  .catch(err => console.log('❌ DB Connection Error:', err));
+mongoose.connect(MONGO_URI)
+  .then(() => console.log(' Connected to MongoDB Atlas'))
+  .catch(err => console.log(' DB Connection Error:', err));
 
 const ALL_PRODUCTS = [
     // --- منتجات الـ Popular ---
