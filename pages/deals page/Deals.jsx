@@ -16,7 +16,7 @@ function Deals() {
     };
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/products?page=deals')
+        axios.get('/api/products?page=deals')
             .then(res => {
                 setDealsProducts(res.data);
                 setLoading(false);

@@ -1,5 +1,5 @@
 const express = require('express');
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:3YHz7iIuYDmKXCXA@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:aassdd@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
 const cors = require('cors');
 const product = require('./models/Product');
 const cartRouters = require('./routers/cartRoutes');
