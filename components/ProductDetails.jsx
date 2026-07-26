@@ -32,37 +32,51 @@ function ProductDetails() {
     setAddingToCart(false);
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-    
-    fetch(`/api/products/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Product not found");
-        return res.json();
-      })
-      .then((productData) => {
-        if (!isMounted) return;
-        setProduct(productData);
-        
-        return fetch(`/api/products`)
-          .then((res) => res.json())
-          .then((allProducts) => {
-            if (!isMounted) return;
-            const related = allProducts.filter((item) => 
-              item.category === productData.category && (item._id !== productData._id && item.id !== productData._id)
-            ).slice(0, 5);
-            setRelatedProducts(related);
-            setLoading(false);
-          });
-      })
-      .catch((err) => {
-        console.error("Error fetching product data:", err);
-        if (isMounted) setLoading(false);
-      });
+ useEffect(() => {
+  let isMounted = true;
+  setLoading(true);
 
-      return () => { isMounted = false; };
-  }, [id]);
+  async function fetchProductAndRelated() {
+    try {
+      const res = await fetch(`/api/products?id=${id}`);
+      if (!res.ok) throw new Error("Product not found");
+      
+      const productData = await res.json();
+
+      const currentProduct = Array.isArray(productData) ? productData[0] : productData;
+      
+      if (!currentProduct || !isMounted) return;
+      setProduct(currentProduct);
+
+      const allRes = await fetch(`/api/products`);
+      const allProducts = await allRes.json();
+
+      if (!isMounted) return;
+
+      const related = allProducts
+        .filter(
+          (item) =>
+            item.category === currentProduct.category &&
+            item._id !== currentProduct._id
+        )
+        .slice(0, 5);
+
+      setRelatedProducts(related);
+    } catch (err) {
+      console.error("Error fetching product data:", err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  }
+
+  if (id) {
+    fetchProductAndRelated();
+  }
+
+  return () => {
+    isMounted = false;
+  };
+}, [id]);
 
   if (loading) return <div className="text-center py-20 text-slate-600">Loading product...</div>;
   if (!product) return <div className="text-center py-20">Product not found!</div>;
