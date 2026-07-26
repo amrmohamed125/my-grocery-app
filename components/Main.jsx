@@ -33,7 +33,7 @@ function Main() {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:5000/api/products?page=home_page');
+                const response = await fetch('/api/products?page=home_page');
                 if (!response.ok) {
                     throw new Error('Failed to fetch popular products');
                 }

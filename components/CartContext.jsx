@@ -23,7 +23,7 @@ export function CartProvider({ children }) {
         return;
       }
 
-      const res = await fetch('http://localhost:5000/api/cart', {
+      const res = await fetch('/api/cart', {
         headers: getAuthHeaders()
       });
 
