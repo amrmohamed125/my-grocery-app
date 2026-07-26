@@ -45,7 +45,7 @@ function ProductDetails() {
         if (!isMounted) return;
         setProduct(productData);
         
-        return fetch(`http://localhost:5000/api/products`)
+        return fetch(`/api/products`)
           .then((res) => res.json())
           .then((allProducts) => {
             if (!isMounted) return;
