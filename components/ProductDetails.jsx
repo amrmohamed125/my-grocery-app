@@ -36,7 +36,7 @@ function ProductDetails() {
     let isMounted = true;
     setLoading(true);
     
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`/api/products/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Product not found");
         return res.json();

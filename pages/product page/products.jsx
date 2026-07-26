@@ -37,7 +37,6 @@ function AllProductsPage() {
             try {
                 setLoading(true);
                 const response = await axios.get('/api/products');
-                // const response = await axios.get('http://localhost:5000/api/products'); 
                 setProducts(response.data);
                 setLoading(false);
             } catch (err) {
@@ -267,10 +266,9 @@ function AllProductsPage() {
                                             {/* حاوية الصورة */}
                                             <div className='relative! w-full! aspect-square! bg-zinc-50/40! flex! items-center! justify-center! p-6!'>
                                                 <img 
-                                                    src={product.img?.startsWith('http') ? product.img : `/src/assets/images/${product.img}`}
-                                                    alt={product.name} 
-                                                    className='w-full h-full object-cover p-4 group-hover:p-2! transition-all duration-300' 
-                                                />
+                                                src={new URL(`../../src/assets/images/${product.img}`, import.meta.url).href} 
+                                                alt={product.name} 
+                                                className='w-full h-full object-cover p-4 group-hover:p-2! transition-all! duration-300!' />
                                                 {product.discount && (
                                                     <div className='absolute! left-3! top-3!'>
                                                         <span className='px-1.5! py-0.5! text-[9px]! font-bold! bg-[#f97316]! text-white! rounded-md! uppercase! tracking-wider!'>
