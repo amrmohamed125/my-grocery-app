@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Product from '../backend/models/Product.js';
+import Product from '../backend/models/Product';
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:3YHz7iIuYDmKXCXA@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
 
