@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
-import Product from '../backend/models/Product';
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:3YHz7iIuYDmKXCXA@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
+
+// تعريف الـ Model المباشر بدون استخدام مسارات خارجية
+const productSchema = new mongoose.Schema({}, { strict: false });
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema, 'products');
 
 export default async function handler(req, res) {
   try {
