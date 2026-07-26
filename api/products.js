@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Product from '../backend/models/Product'; // أو حسب مكان ملف الموديل عندك
+import Product from '../backend/models/Product';
 
 const ALL_PRODUCTS = [
     // --- منتجات الـ Popular ---
@@ -39,12 +39,15 @@ export default async function handler(req, res) {
       await mongoose.connect(process.env.MONGO_URI);
     }
 
-    // هيمسح القديم فوراً وينزل الجداد ويرجعهم في نفس الريكويست
-    await Product.deleteMany({});
-    const freshProducts = await Product.insertMany(ALL_PRODUCTS);
+    let products = await Product.find({});
 
-    return res.status(200).json(freshProducts);
+    if (products.length <= 2) {
+      await Product.deleteMany({});
+      products = await Product.insertMany(ALL_PRODUCTS);
+    }
+
+    res.status(200).json(products);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 }
