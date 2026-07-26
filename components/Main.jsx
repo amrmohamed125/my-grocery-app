@@ -34,7 +34,7 @@ function Main() {
             try {
                 setLoading(true);
                 const response = await fetch('/api/products?page=home_page');
-                const data = await response.json();
+                // const result = await response.json();
                 if (!response.ok) {
                     throw new Error('Failed to fetch popular products');
                 }
