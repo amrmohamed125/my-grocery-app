@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:aassdd@cluster0.qmpjren.mongodb.net/my-grocery-app?appName=Cluster0";
 const Product = require('./models/Product');
 
