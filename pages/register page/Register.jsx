@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import heroBg from '../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
+import heroBg from '../../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function Register() {
   const [name, setName] = useState('');
