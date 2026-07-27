@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import heroBg from '../assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function Register() {
   const [name, setName] = useState('');
@@ -16,7 +17,7 @@ function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
@@ -48,7 +49,7 @@ function Register() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url('../../src/assets/images/hero_bg-iD2fuyEl.jpeg')`,
+            backgroundImage: `url(${heroBg})`,
           }}
         />
         <div className="absolute inset-0 bg-[#1b3022]/85" />
@@ -63,11 +64,10 @@ function Register() {
         </div>
       </div>
 
-      {/* ⚪ الجزء اليمين: الفورم الخاص بإنشاء الحساب */}
+      {/* ⚪ الجزء اليمين: الفورم */}
       <div className="flex flex-col justify-center px-6 sm:px-16 lg:px-24 xl:px-32 h-full bg-white">
         <div className="w-full max-w-md mx-auto">
           
-          {/* اللوجو */}
           <div className="flex items-center justify-center gap-2 mb-6">
             <Link to='/' className='text-2xl font-semibold no-underline!'>
               <i className="fa-solid fa-person-biking text-[#108910] mr-1"></i>
@@ -75,7 +75,6 @@ function Register() {
             </Link>
           </div>
 
-          {/* العنوان الرئيسي */}
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-800 mb-1">
             Sign up for an account
           </h2>
@@ -86,17 +85,14 @@ function Register() {
             </Link>
           </p>
 
-          {/* رسالة الخطأ */}
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl text-center">
               {error}
             </div>
           )}
 
-          {/* الفورم */}
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            {/* حقل الاسم */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Name
@@ -119,7 +115,6 @@ function Register() {
               </div>
             </div>
             
-            {/* حقل الإيميل */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Email Address
@@ -139,7 +134,6 @@ function Register() {
               </div>
             </div>
 
-            {/* حقل الباسورد */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Password
@@ -159,7 +153,6 @@ function Register() {
               </div>
             </div>
 
-            {/* زرار التسجيل */}
             <button
               type="submit"
               disabled={loading}

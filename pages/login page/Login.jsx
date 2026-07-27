@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import heroBg from '../assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function LogIn() {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ function LogIn() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -47,7 +48,7 @@ function LogIn() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url('../../src/assets/images/hero_bg-iD2fuyEl.jpeg')`,
+            backgroundImage: `url(${heroBg})`,
           }}
         />
         <div className="absolute inset-0 bg-[#1b3022]/85" />
@@ -62,11 +63,10 @@ function LogIn() {
         </div>
       </div>
 
-      {/* ⚪ الجزء اليمين: الفورم الخاص بتسجيل الدخول */}
+      {/* ⚪ الجزء اليمين: الفورم */}
       <div className="flex flex-col justify-center px-6 sm:px-16 lg:px-24 xl:px-32 h-full bg-white">
         <div className="w-full max-w-md mx-auto">
           
-          {/* اللوجو */}
           <div className="flex items-center justify-center gap-2 mb-6">
             <Link to='/' className='text-2xl font-semibold no-underline!'>
               <i className="fa-solid fa-person-biking text-[#108910] mr-1"></i>
@@ -74,7 +74,6 @@ function LogIn() {
             </Link>
           </div>
 
-          {/* العنوان الرئيسي */}
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-800 mb-1">
             Sign in to your account
           </h2>
@@ -85,17 +84,13 @@ function LogIn() {
             </Link>
           </p>
 
-          {/* رسالة الخطأ */}
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl text-center">
               {error}
             </div>
           )}
 
-          {/* الفورم */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            
-            {/* حقل الإيميل */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Email Address
@@ -115,7 +110,6 @@ function LogIn() {
               </div>
             </div>
 
-            {/* حقل الباسورد */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Password
@@ -135,7 +129,6 @@ function LogIn() {
               </div>
             </div>
 
-            {/* زرار الدخول */}
             <button
               type="submit"
               disabled={loading}
@@ -143,7 +136,6 @@ function LogIn() {
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
-
           </form>
 
         </div>
