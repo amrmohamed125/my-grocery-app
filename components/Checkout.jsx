@@ -27,6 +27,12 @@ export default function Checkout() {
     { id: 'review', label: <><i className="fa-solid fa-square-check"></i> Review</>, done: activeTab === 'review' }
   ];
 
+  const getImageUrl = (name) => {
+    if (!name) return '';
+    if (name.startsWith('http://') || name.startsWith('https://')) return name;
+    return new URL(`../src/assets/images/${name}`, import.meta.url).href;
+};
+
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="text-center! py-20! bg-[#f9f9f6]! min-h-screen!">
@@ -186,7 +192,7 @@ export default function Checkout() {
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex! flex-row! justify-between! items-center! py-3! first:pt-0! last:pb-0! bg-transparent!">
                       <div className="flex! items-center! gap-3! bg-transparent!">
-                        <img src={item.image || `/src/assets/images/${item.img}`} alt={item.name} className="w-8! h-8! object-contain!" />
+                        <img src={getImageUrl(item.img || item.image)} alt={item.name} className="w-8! h-8! object-contain!" />
                         <div className="text-left!">
                           <p className="text-xs! font-bold! text-slate-800! m-0! p-0! border-0! bg-transparent!">{item.name}</p>
                           <p className="text-[10px]! text-gray-400! m-0! p-0! border-0! bg-transparent!">Qty: {item.qty}</p>

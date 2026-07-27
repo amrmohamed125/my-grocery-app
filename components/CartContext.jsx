@@ -126,7 +126,6 @@ export function CartProvider({ children }) {
     }
   };
 
-  // حماية .reduce بحماية أمان في حالة كانت cartItems ليست Array لأي سبب
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
   const subtotal = safeCartItems.reduce((sum, item) => sum + ((item.price || 0) * (item.qty || 1)), 0);
   const delivery = 0;
