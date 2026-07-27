@@ -5,8 +5,8 @@ import { useCart } from '../components/CartContext';
 const mockReviews = [
   { id: 1, name: "Ahmed Ali", date: "2026-07-15", rating: 5, comment: "Excellent quality and fast delivery!", helpful: 3 },
   { id: 2, name: "Sara Mohamed", date: "2026-07-12", rating: 4, comment: "Very good product, highly recommended.", helpful: 1 },
-  { id: 1, name: "Ahmed Ali", date: "2026-07-15", rating: 5, comment: "Excellent quality and fast delivery!", helpful: 3 },
-  { id: 2, name: "Sara Mohamed", date: "2026-07-12", rating: 4, comment: "Very good product, highly recommended.", helpful: 1 }
+  { id: 3, name: "Ahmed Ali", date: "2026-07-15", rating: 5, comment: "Excellent quality and fast delivery!", helpful: 3 },
+  { id: 4, name: "Sara Mohamed", date: "2026-07-12", rating: 4, comment: "Very good product, highly recommended.", helpful: 1 }
 ];
 
 const getImageUrl = (name) => {
@@ -32,51 +32,50 @@ function ProductDetails() {
     setAddingToCart(false);
   };
 
- useEffect(() => {
-  let isMounted = true;
-  setLoading(true);
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
 
-  async function fetchProductAndRelated() {
-    try {
-      const res = await fetch(`/api/products?id=${id}`);
-      if (!res.ok) throw new Error("Product not found");
-      
-      const productData = await res.json();
+    async function fetchProductAndRelated() {
+      try {
+        const res = await fetch(`/api/products?id=${id}`);
+        if (!res.ok) throw new Error("Product not found");
+        
+        const productData = await res.json();
+        const currentProduct = Array.isArray(productData) ? productData[0] : productData;
+        
+        if (!currentProduct || !isMounted) return;
+        setProduct(currentProduct);
 
-      const currentProduct = Array.isArray(productData) ? productData[0] : productData;
-      
-      if (!currentProduct || !isMounted) return;
-      setProduct(currentProduct);
+        const allRes = await fetch(`/api/products`);
+        const allProducts = await allRes.json();
 
-      const allRes = await fetch(`/api/products`);
-      const allProducts = await allRes.json();
+        if (!isMounted) return;
 
-      if (!isMounted) return;
+        const related = allProducts
+          .filter(
+            (item) =>
+              item.category === currentProduct.category &&
+              item._id !== currentProduct._id
+          )
+          .slice(0, 5);
 
-      const related = allProducts
-        .filter(
-          (item) =>
-            item.category === currentProduct.category &&
-            item._id !== currentProduct._id
-        )
-        .slice(0, 5);
-
-      setRelatedProducts(related);
-    } catch (err) {
-      console.error("Error fetching product data:", err);
-    } finally {
-      if (isMounted) setLoading(false);
+        setRelatedProducts(related);
+      } catch (err) {
+        console.error("Error fetching product data:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
-  }
 
-  if (id) {
-    fetchProductAndRelated();
-  }
+    if (id) {
+      fetchProductAndRelated();
+    }
 
-  return () => {
-    isMounted = false;
-  };
-}, [id]);
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   if (loading) return <div className="text-center py-20 text-slate-600">Loading product...</div>;
   if (!product) return <div className="text-center py-20">Product not found!</div>;
@@ -242,7 +241,7 @@ function ProductDetails() {
           </Link>
         </div>
 
-        {/* Related Products Grid - 2 per row on mobile */}
+        {/* Related Products Grid */}
         <div className="grid! grid-cols-2! sm:grid-cols-3! md:grid-cols-4! lg:grid-cols-5! gap-3! sm:gap-4! p-0!">
           {relatedProducts.length === 0 ? (
             <p className="col-span-full! text-xs! text-gray-400! py-4! m-0!">No related products found in this category.</p>
@@ -253,56 +252,58 @@ function ProductDetails() {
                 key={item._id || item.id} 
                 className="w-full! bg-white! rounded-2xl! p-3! border! border-slate-100! hover:shadow-md! transition-all! duration-300! group flex! flex-col! justify-between! no-underline!"
               >
-                <div className="relative! aspect-square! bg-slate-50! rounded-xl! flex! items-center! justify-center! mb-2! overflow-hidden!">
+                <div className="relative aspect-square overflow-hidden bg-gray-50/50 w-full">
+                  <img 
+                    src={getImageUrl(item.img || item.image)} 
+                    alt={item.name} 
+                    className="w-full h-full object-cover p-4 group-hover:p-2! transition-all! duration-300!" 
+                  />
                   {item.discount && (
-                    <span className="absolute! top-2! left-2! bg-orange-500! text-[9px]! font-black! text-white! px-1.5! py-0.5! rounded! uppercase! border-0! z-10!">
-                      {item.discount}
-                    </span>
-                  )}
-                  <img src={getImageUrl(item.img || item.image)} alt={item.name} className="w-full! h-full! object-cover! p-4! group-hover:p-2! transition-all! duration-300!" />
-                  {product.discount && (
-                      <div className='absolute left-3 top-3 flex flex-wrap gap-1.5'>
-                          <span className='px-2 py-0.5 text-[10px] font-semibold uppercase bg-[#f97316] text-white rounded-full'>
-                              {product.discount}
-                          </span>
-                      </div>
+                    <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase bg-[#f97316] text-white rounded-full">
+                        {item.discount}
+                      </span>
+                    </div>
                   )}
                 </div>
-                
-                <div className="text-zinc-700!">
-                  <h3 className="text-xs! text-slate-800! line-clamp-2! min-h-8! mb-1! m-0!">{item.name}</h3>
-                  <div className="flex! items-center! gap-1! text-lg! text-orange-400! mb-2!">
-                    <span>★ {item.rating || 4.5}</span>
-                    <span className="text-gray-400!">({item.reviewsCount || 12})</span>
-                  </div>
-                </div>
 
-                <div className="flex! items-center! justify-between! mt-1!">
-                  <div className="flex! items-baseline! gap-0.5! truncate!">
-                    <span className="text-xs! font-black! text-slate-900!">${Number(item.price).toFixed(2)}</span>
+                <div className="p-3.5 text-zinc-700! flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-sm! font-medium! text-gray-800 leading-snug! mb-1.5 line-clamp-2! min-h-10 text-start">
+                      {item.name}
+                    </h3>
+                    <div className="flex items-center gap-1 mb-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star size-3 text-[#f59e0b] fill-[#f59e0b]" aria-hidden="true">
+                        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+                      </svg>
+                      <span className="text-xs font-medium text-[#1b3022]">{item.rating || '4.5'}</span>
+                      <span className="text-xs text-[#6b7280]">({item.reviewsCount || '12'})</span>
+                    </div>
                   </div>
 
-                  <div className='flex items-baseline gap-1 truncate'>
-                      <span className='text-base font-bold text-gray-900'>${product.price}</span>
-                      <span className='text-[10px] text-[#6b7280]'>{product.unit}</span>
-                      {product.originalPrice && product.originalPrice > product.price && (
-                          <span className='text-xs text-[#6b7280] line-through ml-1'>${product.originalPrice}</span>
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-baseline gap-1 truncate">
+                      <span className="text-base font-bold text-gray-900">${item.price}</span>
+                      {item.unit && <span className="text-[10px] text-[#6b7280]">{item.unit}</span>}
+                      {item.originalPrice && item.originalPrice > item.price && (
+                        <span className="text-xs text-[#6b7280] line-through ml-1">${item.originalPrice}</span>
                       )}
-                  </div>
+                    </div>
 
-                  <button 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleAddToCart(item, 1);
-                    }}
-                    className="w-6! h-6! rounded-lg! bg-[#f97316]! text-white! flex! items-center! justify-center! shrink-0! hover:bg-[#ea580c]! transition-colors! border-0! active:scale-95! cursor-pointer! shadow-sm! p-0!"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-3.5!">
-                      <path d="M5 12h14"></path>
-                      <path d="M12 5v14"></path>
-                    </svg>
-                  </button>
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleAddToCart(item, 1);
+                      }}
+                      className="w-6! h-6! rounded-lg! bg-[#f97316]! text-white! flex! items-center! justify-center! shrink-0! hover:bg-[#ea580c]! transition-colors! border-0! active:scale-95! cursor-pointer! shadow-sm! p-0!"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-3.5!">
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5v14"></path>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </Link>
             ))

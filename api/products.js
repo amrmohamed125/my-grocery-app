@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// 1. تعريف الـ Schema مع إضافة حقل الـ description
 const productSchema = new mongoose.Schema({
   name: String,
   img: String,
@@ -26,7 +25,6 @@ export default async function handler(req, res) {
 
     const { page, category, id } = req.query;
 
-    // 2. لو مبعوت id رجّع المنتج ده بس
     if (id) {
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ error: "Invalid product ID format" });
@@ -39,7 +37,6 @@ export default async function handler(req, res) {
       return res.status(200).json(singleProduct);
     }
 
-    // 3. لو مش مبعوت id ينفذ الفلترة العادية للـ Pages والـ Categories
     let filter = {};
 
     if (page) {
