@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const getImageUrl = (imageName) => {
-    return new URL(`../../src/assets/images/${imageName}`, import.meta.url).href;
+    return new URL(`../../../src/assets/images/${imageName}`, import.meta.url).href;
 };
 
 // 📦 مصفوفة المنتجات
