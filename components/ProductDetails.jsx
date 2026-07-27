@@ -131,10 +131,10 @@ function ProductDetails() {
             
             <div className="flex! items-center! gap-1! text-orange-400! text-sm! mb-4!">
               <div className="flex! text-amber-500! gap-0.5!">
-                {"★".repeat(Math.floor(product.rating || 4))} <span className="text-gray-300!">★</span>
+                {"★".repeat(Math.floor(product.rating || 5))} <span className="text-gray-300!">★</span>
               </div>
               <span className="text-slate-800! font-bold! ml-1! mt-0.5!">{product.rating || 4.5}</span>
-              <span className="text-gray-400! text-xs! ml-1! mt-0.5!">({product.reviewsCount || 0} reviews)</span>
+              <span className="text-gray-400! text-xs! ml-1! mt-0.5!">({product.reviewsCount || 12} reviews)</span>
             </div>
 
             <div className="flex! items-baseline! gap-3! mb-4!">
@@ -260,19 +260,34 @@ function ProductDetails() {
                     </span>
                   )}
                   <img src={getImageUrl(item.img || item.image)} alt={item.name} className="w-full! h-full! object-cover! p-4! group-hover:p-2! transition-all! duration-300!" />
+                  {product.discount && (
+                      <div className='absolute left-3 top-3 flex flex-wrap gap-1.5'>
+                          <span className='px-2 py-0.5 text-[10px] font-semibold uppercase bg-[#f97316] text-white rounded-full'>
+                              {product.discount}
+                          </span>
+                      </div>
+                  )}
                 </div>
                 
                 <div className="text-zinc-700!">
-                  <h3 className="text-xs! font-bold! text-slate-800! line-clamp-2! min-h-8! mb-1! m-0!">{item.name}</h3>
-                  <div className="flex! items-center! gap-1! text-[10px]! text-orange-400! mb-2!">
+                  <h3 className="text-xs! text-slate-800! line-clamp-2! min-h-8! mb-1! m-0!">{item.name}</h3>
+                  <div className="flex! items-center! gap-1! text-lg! text-orange-400! mb-2!">
                     <span>★ {item.rating || 4.5}</span>
-                    <span className="text-gray-400!">({item.reviewsCount || 0})</span>
+                    <span className="text-gray-400!">({item.reviewsCount || 12})</span>
                   </div>
                 </div>
 
                 <div className="flex! items-center! justify-between! mt-1!">
                   <div className="flex! items-baseline! gap-0.5! truncate!">
                     <span className="text-xs! font-black! text-slate-900!">${Number(item.price).toFixed(2)}</span>
+                  </div>
+
+                  <div className='flex items-baseline gap-1 truncate'>
+                      <span className='text-base font-bold text-gray-900'>${product.price}</span>
+                      <span className='text-[10px] text-[#6b7280]'>{product.unit}</span>
+                      {product.originalPrice && product.originalPrice > product.price && (
+                          <span className='text-xs text-[#6b7280] line-through ml-1'>${product.originalPrice}</span>
+                      )}
                   </div>
 
                   <button 
