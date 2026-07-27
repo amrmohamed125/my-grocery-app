@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import AddProduct from '../add product/AddProduct';
+
+const getImageUrl = (imageName) => {
+    return new URL(`../../src/assets/images/${imageName}`, import.meta.url).href;
+};
 
 // 📦 مصفوفة المنتجات
 const PRODUCTS_DATA = [
@@ -9,7 +12,7 @@ const PRODUCTS_DATA = [
         category: 'dairy-eggs',
         price: '$130.00',
         stock: 0,
-        image: '../../src/assets/images/gek3mmiig3lixlkpxks8.png'
+        image: getImageUrl('gek3mmiig3lixlkpxks8.png')
     },
     {
         id: 2,
@@ -17,7 +20,7 @@ const PRODUCTS_DATA = [
         category: 'pantry-staples',
         price: '$30.00',
         stock: 0,
-        image: '../../src/assets/images/vnzb2qbwtpab5gnqvx0f.png'
+        image: getImageUrl('vnzb2qbwtpab5gnqvx0f.png')
     },
     {
         id: 3,
@@ -25,7 +28,7 @@ const PRODUCTS_DATA = [
         category: 'pantry-staples',
         price: '$520.00',
         stock: 0,
-        image: '../../src/assets/images/evuovl2nlwdjukosfz23.png'
+        image: getImageUrl('evuovl2nlwdjukosfz23.png')
     },
     {
         id: 4,
@@ -33,7 +36,7 @@ const PRODUCTS_DATA = [
         category: 'dairy-eggs',
         price: '$55.00',
         stock: 62,
-        image: '../../src/assets/images/ooamzy497lhsj2gjuwby.png'
+        image: getImageUrl('ooamzy497lhsj2gjuwby.png')
     },
     {
         id: 5,
@@ -41,7 +44,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$45.00',
         stock: 0,
-        image: '../../src/assets/images/dsnmko6gqtyw31okby80.png'
+        image: getImageUrl('dsnmko6gqtyw31okby80.png')
     },
     {
         id: 6,
@@ -49,7 +52,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$35.0',
         stock: '48',
-        image: '../../src/assets/images/potato.png'
+        image: getImageUrl('potato.png')
     },
     {
         id: 7,
@@ -57,7 +60,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$44.0',
         stock: '73',
-        image: '../../src/assets/images/carrot.png'
+        image: getImageUrl('carrot.png')
     },
     {
         id: 8,
@@ -65,7 +68,7 @@ const PRODUCTS_DATA = [
         category: 'pantry-staples',
         price: '$40.0',
         stock: '0',
-        image: '../../src/assets/images/dsep7owmwvfrukzbslqo.png'
+        image: getImageUrl('dsep7owmwvfrukzbslqo.png')
     },
     {
         id: 9,
@@ -73,7 +76,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$75.0',
         stock: '37',
-        image: '../../src/assets/images/orange.png'
+        image: getImageUrl('orange.png')
     },
     {
         id: 10,
@@ -81,7 +84,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$140.0',
         stock: '0',
-        image: '../../src/assets/images/mango.png'
+        image: getImageUrl('mango.png')
     },
     {
         id: 11,
@@ -89,7 +92,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$65.0',
         stock: '71',
-        image: '../../src/assets/images/jsmb7caaokhnyci2coga.png'
+        image: getImageUrl('jsmb7caaokhnyci2coga.png')
     },
     {
         id: 12,
@@ -97,7 +100,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$28.0',
         stock: '74',
-        image: '../../src/assets/images/tomato.png'
+        image: getImageUrl('tomato.png')
     },
     {
         id: 13,
@@ -105,7 +108,7 @@ const PRODUCTS_DATA = [
         category: 'pantry-staples',
         price: '$110.0',
         stock: '84',
-        image: '../../src/assets/images/dboutcrkdjhoxcvbbqne.png'
+        image: getImageUrl('dboutcrkdjhoxcvbbqne.png')
     },
     {
         id: 14,
@@ -113,7 +116,7 @@ const PRODUCTS_DATA = [
         category: 'dairy-eggs',
         price: '$85.0',
         stock: '60',
-        image: '../../src/assets/images/panner.png'
+        image: getImageUrl('panner.png')
     },
     {
         id: 15,
@@ -121,7 +124,7 @@ const PRODUCTS_DATA = [
         category: 'pantry-staples',
         price: '$230.0',
         stock: '61',
-        image: '../../src/assets/images/ooitbkcjcky0gkjmkatb.png'
+        image: getImageUrl('ooitbkcjcky0gkjmkatb.png')
     },
     {
         id: 16,
@@ -129,7 +132,7 @@ const PRODUCTS_DATA = [
         category: 'beverages',
         price: '$70.0',
         stock: '61',
-        image: '../../src/assets/images/7up.png'
+        image: getImageUrl('7up.png')
     },
     {
         id: 17,
@@ -137,7 +140,7 @@ const PRODUCTS_DATA = [
         category: 'dairy-eggs',
         price: '$85.0',
         stock: '40',
-        image: '../../src/assets/images/egg.png'
+        image: getImageUrl('egg.png')
     },
     {
         id: 18,
@@ -145,7 +148,7 @@ const PRODUCTS_DATA = [
         category: 'beverages',
         price: '$60.0',
         stock: '80',
-        image: '../../src/assets/images/daiglpvgna1dlhjplbve.png'
+        image: getImageUrl('daiglpvgna1dlhjplbve.png')
     },
     {
         id: 19,
@@ -153,7 +156,7 @@ const PRODUCTS_DATA = [
         category: 'pantry-staples',
         price: '$140.0',
         stock: '34',
-        image: '../../src/assets/images/spb5sgy8g24rned9nwog.png'
+        image: getImageUrl('spb5sgy8g24rned9nwog.png')
     },
     {
         id: 20,
@@ -161,7 +164,7 @@ const PRODUCTS_DATA = [
         category: 'beverages',
         price: '$65.0',
         stock: '35',
-        image: '../../src/assets/images/nexecd3mgyzrpeun1bee.png'
+        image: getImageUrl('nexecd3mgyzrpeun1bee.png')
     },
     {
         id: 21,
@@ -169,7 +172,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$45.0',
         stock: '76',
-        image: '../../src/assets/images/wnvtwlm2tphqburhsmyc.png'
+        image: getImageUrl('wnvtwlm2tphqburhsmyc.png')
     },
     {
         id: 22,
@@ -177,7 +180,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$15.0',
         stock: '93',
-        image: '../../src/assets/images/spinach.png'
+        image: getImageUrl('spinach.png')
     },
     {
         id: 23,
@@ -185,7 +188,7 @@ const PRODUCTS_DATA = [
         category: 'beverages',
         price: '$75.0',
         stock: '72',
-        image: '../../src/assets/images/coca.png'
+        image: getImageUrl('coca.png')
     },
     {
         id: 24,
@@ -193,7 +196,7 @@ const PRODUCTS_DATA = [
         category: 'bakery',
         price: '$35.0',
         stock: '74',
-        image: '../../src/assets/images/bakery-B-i44uip.png'
+        image: getImageUrl('bakery-B-i44uip.png')
     },
     {
         id: 25,
@@ -201,7 +204,7 @@ const PRODUCTS_DATA = [
         category: 'fruits-vegetables',
         price: '$90.0',
         stock: '85',
-        image: '../../src/assets/images/apple.png'
+        image: getImageUrl('apple.png')
     }
 ];
 

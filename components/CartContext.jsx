@@ -75,7 +75,6 @@ export function CartProvider({ children }) {
     });
     setIsCartOpen(true);
 
-    // 2. إرسال الطلب للسيرفر في الخلفية
     try {
       const res = await fetch('/api/cart', {
         method: 'POST',
@@ -126,7 +125,6 @@ export function CartProvider({ children }) {
     const cleanId = typeof id === 'object' ? (id._id || id.id) : id;
     const previousCart = [...cartItems];
 
-    // حذف فوراً من الشاشة
     setCartItems(prev => prev.filter(item => item.id !== cleanId));
 
     try {
