@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:aassdd@cluster0.qmpjren.mongodb.net/my-grocery-app?retryWrites=true&w=majority";
-const JWT_SECRET = process.env.JWT_SECRET || "my_fixed_secret_key_123456789_grocery";
 
 const productSchema = new mongoose.Schema({ name: String, price: Number, img: String });
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
@@ -32,14 +30,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: "Unauthorized: Missing Token" });
     }
 
-    let userId;
-
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      userId = decoded.id;
-    } catch (err) {
-      userId = token;
-    }
+    const userId = token;
 
     if (req.method === 'GET') {
       let cart = await Cart.findOne({ userId }).populate('items.productId');

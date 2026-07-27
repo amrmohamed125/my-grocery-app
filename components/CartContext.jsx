@@ -2,146 +2,102 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
-export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-  };
-
+  // جلب السلة عند فتح الصفحة
   const fetchCart = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        setCartItems([]);
-        return;
-      }
-
       const res = await fetch('/api/cart', {
-        headers: getAuthHeaders()
+        headers: { Authorization: `Bearer ${token}` }
       });
-
-      const data = await res.json();
-      
-      if (res.ok && data && data.items) {
-        const formattedItems = data.items
-          .filter(item => item.productId)
-          .map((item) => ({
-            ...item.productId, 
-            id: item.productId._id, 
-            qty: item.quantity,
-          }));
-        setCartItems(formattedItems);
+      if (res.ok) {
+        const data = await res.json();
+        setCart(data);
       }
-    } catch (error) {
-      console.error('❌ Error fetching cart from backend:', error);
+    } catch (err) {
+      console.error("Fetch Cart Error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchCart();
-
-    const handleStorageChange = () => fetchCart();
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const addToCart = async (product, quantity = 1) => {
+  // إضافة منتج للسلة
+  const addToCart = async (productId, quantity = 1) => {
     const token = localStorage.getItem('token');
-
     if (!token) {
-      window.location.href = '/login';
+      alert("يرجى تسجيل الدخول أولاً");
       return;
     }
 
-    const productId = product._id || product.id;
-
     try {
       const res = await fetch('/api/cart', {
         method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ productId, quantity }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ productId: String(productId), quantity })
       });
 
       if (res.ok) {
-        await fetchCart();
-        setIsCartOpen(true);
+        const updatedCart = await res.json();
+        setCart(updatedCart);
       } else {
         const errorData = await res.json();
-        console.error('❌ Server error:', errorData);
+        alert(errorData.message || "حدث خطأ أثناء إضافة المنتج");
       }
-    } catch (error) {
-      console.error('❌ Error adding to cart:', error);
+    } catch (err) {
+      console.error("Add To Cart Error:", err);
     }
   };
 
-  const updateQty = async (id, delta) => {
-    const currentItem = cartItems.find((item) => item.id === id);
-    if (currentItem && currentItem.qty + delta <= 0) {
-      return removeFromCart(id);
-    }
+  // حذف منتج من السلة
+  const removeFromCart = async (productId) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
 
-    try {
-      const res = await fetch('/api/cart', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ productId: id, quantity: delta }),
-      });
+    // استخراج الـ ID سواء كان أوبجيكت أو String
+    const cleanProductId = typeof productId === 'object' ? productId._id : productId;
 
-      if (res.ok) {
-        await fetchCart();
-      }
-    } catch (error) {
-      console.error('❌ Error updating quantity:', error);
-    }
-  };
-
-  const removeFromCart = async (id) => {
     try {
       const res = await fetch('/api/cart/remove', {
         method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ productId: id }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ productId: String(cleanProductId) })
       });
 
       if (res.ok) {
-        await fetchCart();
+        const updatedCart = await res.json();
+        setCart(updatedCart);
+      } else {
+        const errorData = await res.json();
+        alert(errorData.message || "فشل حذف المنتج");
       }
-    } catch (error) {
-      console.error('❌ Error removing item from cart:', error);
+    } catch (err) {
+      console.error("Remove From Cart Error:", err);
     }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const delivery = subtotal > 0 ? 0 : 0;
-  const tax = subtotal * 0.08;
-  const total = subtotal + delivery + tax;
-
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        isCartOpen,
-        setIsCartOpen,
-        addToCart,
-        updateQty,
-        removeFromCart,
-        subtotal,
-        delivery,
-        tax,
-        total,
-        fetchCart,
-      }}
-    >
+    <CartContext.Provider value={{ cart, setCart, addToCart, removeFromCart, loading, fetchCart }}>
       {children}
     </CartContext.Provider>
   );
-}
+};
 
 export const useCart = () => useContext(CartContext);

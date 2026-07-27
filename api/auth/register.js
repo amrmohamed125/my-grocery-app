@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -9,6 +10,10 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:aassdd@cluster0.qmpjren.mongodb.net/my-grocery-app?retryWrites=true&w=majority";
+
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -23,7 +28,7 @@ export default async function handler(req, res) {
     const { name, email, password } = req.body || {};
 
     if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+      return res.status(400).json({ message: 'All fields are required' });
     }
 
     const existingUser = await User.findOne({ email });
@@ -31,13 +36,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    const newUser = new User({ name, email, password });
+    // تشفير كلمة السر بـ sha256
+    const hashedPassword = hashPassword(password);
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
     await newUser.save();
+
+    const userIdStr = newUser._id.toString();
 
     return res.status(201).json({
       message: 'Registration successful',
-      token: newUser._id.toString(),
-      user: { id: newUser._id, name: newUser.name, email: newUser.email }
+      token: userIdStr,
+      user: { id: userIdStr, name: newUser.name, email: newUser.email }
     });
 
   } catch (error) {
