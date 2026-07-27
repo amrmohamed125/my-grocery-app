@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import heroBg from '../../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
-الباقي بتاع الكارت هبعتوا في الرسالة الجاية عشان تظبط وفوق وخلي ذاكرتك دي شغالة معايا كده وتربط ده ب ده
 
 function Register() {
   const [name, setName] = useState('');
