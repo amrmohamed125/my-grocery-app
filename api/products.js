@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// تعريف الموديل مباشرة عشان نضمن إنه يشتغل على Vercel بدون مشاكل مسارات
+// 1. تعريف الـ Schema مع إضافة حقل الـ description
 const productSchema = new mongoose.Schema({
   name: String,
   img: String,
@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema({
   category: String,
   appearsIn: [String],
   stock: Number,
+  description: String,
 }, { timestamps: true });
 
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
@@ -23,10 +24,24 @@ export default async function handler(req, res) {
       await mongoose.connect(MONGO_URI);
     }
 
-    const { page, category } = req.query;
+    const { page, category, id } = req.query;
+
+    // 2. لو مبعوت id رجّع المنتج ده بس
+    if (id) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid product ID format" });
+      }
+      
+      const singleProduct = await Product.findById(id);
+      if (!singleProduct) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      return res.status(200).json(singleProduct);
+    }
+
+    // 3. لو مش مبعوت id ينفذ الفلترة العادية للـ Pages والـ Categories
     let filter = {};
 
-    // الفلترة الصحيحة للمصفوفات في Mongoose
     if (page) {
       filter.appearsIn = { $in: [page] };
     }
@@ -37,6 +52,7 @@ export default async function handler(req, res) {
 
     const products = await Product.find(filter);
     return res.status(200).json(products);
+
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
