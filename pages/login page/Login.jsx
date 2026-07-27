@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-down';
+import { Link, useNavigate } from 'react-router-dow';
 import heroBg from '../../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function LogIn() {
