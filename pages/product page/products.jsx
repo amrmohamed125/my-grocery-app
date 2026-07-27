@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useCart } from '../../components/CartContext';
 
 
 const CATEGORIES = [
@@ -23,6 +24,13 @@ function AllProductsPage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const { addToCart } = useCart();
+
+    const handleAddToCart = async (itemToAdd, qty = 1) => {
+        if (!itemToAdd) return;
+        await addToCart(itemToAdd, qty);
+    };
 
     const [activeCategory, setActiveCategory] = useState('all');
     const [minPrice, setMinPrice] = useState('');
@@ -306,7 +314,11 @@ function AllProductsPage() {
                                                     {/* زر إضافة للسلة */}
                                                     <button 
                                                         type="button"
-                                                        onClick={(e) => triggerDemoToast(e)}
+                                                        onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        handleAddToCart(product, 1);
+                                                    }}
                                                         className='size-6! rounded-lg! bg-[#f97316]! text-white! flex! items-center! justify-center! shrink-0! hover:bg-[#ea580c]! transition-colors! border-0! active:scale-95! cursor-pointer! shadow-sm!'
                                                     >
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-3.5!">
