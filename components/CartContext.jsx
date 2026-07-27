@@ -47,7 +47,6 @@ export function CartProvider({ children }) {
   useEffect(() => {
     fetchCart();
 
-    // 👈 تحديث السلة تلقائياً أول ما اليوزر يسجل دخول ويتم تغيير التوكن
     const handleStorageChange = () => fetchCart();
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
@@ -64,7 +63,7 @@ export function CartProvider({ children }) {
     const productId = product._id || product.id;
 
     try {
-      const res = await fetch('http://localhost:5000/api/cart/add', {
+      const res = await fetch('/api/cart', {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ productId, quantity }),
@@ -89,7 +88,7 @@ export function CartProvider({ children }) {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/cart/add', {
+      const res = await fetch('/api/cart', {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ productId: id, quantity: delta }),
@@ -105,9 +104,10 @@ export function CartProvider({ children }) {
 
   const removeFromCart = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/cart/remove/${id}`, {
-        method: 'DELETE',
+      const res = await fetch('/api/cart/remove', {
+        method: 'POST',
         headers: getAuthHeaders(),
+        body: JSON.stringify({ productId: id }),
       });
 
       if (res.ok) {
