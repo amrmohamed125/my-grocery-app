@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// 🟢 1. استيراد الصورة
 import heroBg from '../../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function Register() {
@@ -30,10 +29,19 @@ function Register() {
         throw new Error(data.message || 'Account creation failed');
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.dispatchEvent(new Event("storage"));
+      // 🟢 التأكد من حماية الـ Token ومنع تخزين undefined
+      const tokenToSave = data.token || (data.user && data.user.id);
 
+      if (!tokenToSave) {
+        throw new Error('Authentication token is missing from server response.');
+      }
+
+      localStorage.setItem('token', tokenToSave);
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+
+      window.dispatchEvent(new Event("storage"));
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -45,13 +53,11 @@ function Register() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-screen w-full overflow-hidden bg-white">
       
-      {/* 🟢 الجزء الشمال: الصورة والترحيب */}
+      {/* الجزء الشمال: الصورة والترحيب */}
       <div className="relative hidden lg:flex flex-col justify-center px-12 h-full text-white">
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ 
-            backgroundImage: `url(${heroBg})`,
-          }}
+          style={{ backgroundImage: `url(${heroBg})` }}
         />
         <div className="absolute inset-0 bg-[#1b3022]/85" />
         
@@ -65,7 +71,7 @@ function Register() {
         </div>
       </div>
 
-      {/* ⚪ الجزء اليمين: الفورم */}
+      {/* الجزء اليمين: الفورم */}
       <div className="flex flex-col justify-center px-6 sm:px-16 lg:px-24 xl:px-32 h-full bg-white">
         <div className="w-full max-w-md mx-auto">
           

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 
-// 1. تعريف الموديل مباشرة لمنع أخطاء الـ Import في Vercel
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://mamr54451_db_user:aassdd@cluster0.qmpjren.mongodb.net/my-grocery-app?retryWrites=true&w=majority";
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -27,18 +28,24 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    // 1. التأكد إن المستخدم مش موجود قبل كده في Atlas
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // 2. إنشاء مستخدم جديد في Atlas
     const newUser = new User({ name, email, password });
     await newUser.save();
 
+    // 🟢 إنشاء Token للحساب الجديد فوراً
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
     return res.status(201).json({
       message: 'Registration successful',
+      token, // 👈 التوكن بيرجع عشان يدخل على طول
       user: { id: newUser._id, name: newUser.name, email: newUser.email }
     });
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-// 🟢 1. استيراد الصورة من مجلد assets
+import { Link, useNavigate } from 'react-router-down';
 import heroBg from '../../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function LogIn() {
@@ -26,13 +25,22 @@ function LogIn() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Login faild');
+        throw new Error(data.message || 'Login failed');
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.dispatchEvent(new Event("storage"));
+      // 🟢 التأكد من حماية الـ Token ومنع تخزين undefined
+      const tokenToSave = data.token || (data.user && data.user.id);
 
+      if (!tokenToSave) {
+        throw new Error('Authentication token is missing from server response.');
+      }
+
+      localStorage.setItem('token', tokenToSave);
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+
+      window.dispatchEvent(new Event("storage"));
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -44,14 +52,11 @@ function LogIn() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-screen w-full overflow-hidden bg-white">
       
-      {/* 🟢 الجزء الشمال: الصورة والترحيب */}
+      {/* الجزء الشمال: الصورة والترحيب */}
       <div className="relative hidden lg:flex flex-col justify-center px-12 h-full text-white">
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ 
-            // 🟢 2. استخدام المتغير المستورد هنا
-            backgroundImage: `url(${heroBg})`,
-          }}
+          style={{ backgroundImage: `url(${heroBg})` }}
         />
         <div className="absolute inset-0 bg-[#1b3022]/85" />
         
@@ -65,7 +70,7 @@ function LogIn() {
         </div>
       </div>
 
-      {/* ⚪ الجزء اليمين: الفورم */}
+      {/* الجزء اليمين: الفورم */}
       <div className="flex flex-col justify-center px-6 sm:px-16 lg:px-24 xl:px-32 h-full bg-white">
         <div className="w-full max-w-md mx-auto">
           
