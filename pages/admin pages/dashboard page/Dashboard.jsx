@@ -98,8 +98,8 @@ function Dashboard({ onOrders }) {
                     </button>
                 </div>
 
-                <div className="overflow-x-auto! [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    <table className="w-full! text-left! border-collapse!">
+                <div className="w-full! overflow-x-auto! touch-pan-x! [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <table className="w-full! min-w-[650px]! text-left! border-collapse!">
                         <thead>
                             <tr className="border-b! border-zinc-100!">
                                 <th className="pb-3! text-[10px]! font-bold! text-zinc-400! tracking-wider! uppercase!">Order ID</th>
