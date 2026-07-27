@@ -98,7 +98,7 @@ function Dashboard({ onOrders }) {
                     </button>
                 </div>
 
-                <div className="overflow-x-auto!">
+                <div className="overflow-x-auto! [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     <table className="w-full! text-left! border-collapse!">
                         <thead>
                             <tr className="border-b! border-zinc-100!">
@@ -143,13 +143,10 @@ function Dashboard({ onOrders }) {
                                     <td className="py-4.5! text-xs! font-bold! text-zinc-500!">{order.date}</td>
                                 </tr>
                             ))}
-
                         </tbody>
                     </table>
                 </div>
-
             </div>
-
         </div>
     );
 }
