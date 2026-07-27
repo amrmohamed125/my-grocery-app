@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import heroBg from '../assets/images/hero_bg-iD2fuyEl.jpeg'; 
+// 🟢 1. استيراد الصورة من مجلد assets
+import heroBg from '../../src/assets/images/hero_bg-iD2fuyEl.jpeg'; 
 
 function LogIn() {
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ function LogIn() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -48,6 +49,7 @@ function LogIn() {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
+            // 🟢 2. استخدام المتغير المستورد هنا
             backgroundImage: `url(${heroBg})`,
           }}
         />
