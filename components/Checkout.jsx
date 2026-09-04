@@ -13,25 +13,28 @@ export default function Checkout() {
 
   const [showToast, setShowToast] = useState(false);
   
-      // دالة إظهار التوست
-      const triggerDemoToast = () => {
-          setShowToast(true);
-          setTimeout(() => {
-              setShowToast(false);
-          }, 2500);
-      };
+  // دالة إظهار التوست
+  const triggerDemoToast = () => {
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 2500);
+  };
 
   const tabs = [
-    { id: 'address', label: <><i className="fa-solid fa-location-dot"></i> Address</>, done: true },
-    { id: 'payment', label: <><i className="fa-solid fa-credit-card"></i> Payment</>, done: activeTab === 'payment' || activeTab === 'review' },
-    { id: 'review', label: <><i className="fa-solid fa-square-check"></i> Review</>, done: activeTab === 'review' }
+    { id: 'address', label: <><i className="fa-solid fa-location-dot"></i> Address</> },
+    { id: 'payment', label: <><i className="fa-solid fa-credit-card"></i> Payment</> },
+    { id: 'review', label: <><i className="fa-solid fa-square-check"></i> Review</> }
   ];
+
+  // ترتيب الخطوات لمعرفة الخطوات السابقة والحالية والمستقبلية
+  const stepOrder = { address: 1, payment: 2, review: 3 };
 
   const getImageUrl = (name) => {
     if (!name) return '';
     if (name.startsWith('http://') || name.startsWith('https://')) return name;
     return new URL(`../src/assets/images/${name}`, import.meta.url).href;
-};
+  };
 
   if (!cartItems || cartItems.length === 0) {
     return (
@@ -47,18 +50,18 @@ export default function Checkout() {
 
       {/* 🔔 رسالة الـ Demo Mode*/}
       <div 
-          className={`fixed! top-6! right-6! z-50! flex! items-center! gap-3! bg-zinc-900! text-white! px-4! py-3! rounded-2xl! shadow-2xl! border! border-zinc-800! pointer-events-none! transition-all! duration-300! ease-out! ${
-              showToast 
-                  ? 'opacity-100! translate-y-0! scale-100!' 
-                  : 'opacity-0! -translate-y-4! scale-95!'
-          }`}
+        className={`fixed! top-6! right-6! z-50! flex! items-center! gap-3! bg-zinc-900! text-white! px-4! py-3! rounded-2xl! shadow-2xl! border! border-zinc-800! pointer-events-none! transition-all! duration-300! ease-out! ${
+          showToast 
+            ? 'opacity-100! translate-y-0! scale-100!' 
+            : 'opacity-0! -translate-y-4! scale-95!'
+        }`}
       >
-          <div className="w-5! h-5! rounded-full! bg-red-500/20! text-red-500! flex! items-center! justify-center! text-xs! font-bold! shrink-0!">
-              ✕
-          </div>
-          <span className="text-xs! font-medium! text-zinc-200! select-none!">
-              Disabled in demo mode.
-          </span>
+        <div className="w-5! h-5! rounded-full! bg-red-500/20! text-red-500! flex! items-center! justify-center! text-xs! font-bold! shrink-0!">
+          ✕
+        </div>
+        <span className="text-xs! font-medium! text-zinc-200! select-none!">
+          Disabled in demo mode.
+        </span>
       </div>
 
       <div className="max-w-4xl! mx-auto! px-4!">
@@ -68,21 +71,35 @@ export default function Checkout() {
         </button>
         <h1 className="text-2xl! font-bold! text-slate-800! mb-6! border-0! bg-transparent! p-0! m-0!">Checkout</h1>
 
-        {/* التابس العلوية */}
+        {/* التابس العلوية (نظام Step-by-Step) */}
         <div className="flex! flex-row! gap-2! mb-8! overflow-x-auto! pb-2! border-0! bg-transparent!">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex! items-center! gap-2! px-4! py-2! rounded-xl! text-xs! sm:text-sm! font-bold! border-0! cursor-pointer! transition-all! shrink-0! ${
-                activeTab === tab.id 
-                  ? 'bg-slate-900! text-white! shadow-sm!' 
-                  : 'bg-white! text-slate-600! hover:bg-slate-50! border! border-slate-100!'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {tabs.map((tab) => {
+            const isCurrent = activeTab === tab.id;
+            const isPassed = stepOrder[tab.id] < stepOrder[activeTab];
+            const isFuture = stepOrder[tab.id] > stepOrder[activeTab];
+
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                disabled={isFuture}
+                onClick={() => {
+                  if (isPassed) {
+                    setActiveTab(tab.id);
+                  }
+                }}
+                className={`flex! items-center! gap-2! px-4! py-2! rounded-xl! text-xs! sm:text-sm! font-bold! border-0! transition-all! shrink-0! ${
+                  isCurrent 
+                    ? 'bg-slate-900! text-white! shadow-sm! cursor-default!' 
+                    : isPassed 
+                    ? 'bg-white! text-slate-700! hover:bg-slate-100! border! border-slate-200! cursor-pointer!' 
+                    : 'bg-slate-100! text-slate-400! border! border-slate-100! cursor-not-allowed! opacity-60!'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid! grid-cols-1! lg:grid-cols-3! gap-8! items-start! border-0! bg-transparent!">
@@ -112,66 +129,66 @@ export default function Checkout() {
 
             {/* 2️⃣ تاب الدفع */}
             {activeTab === 'payment' && (
-            <div className="bg-white! rounded-2xl! p-6! shadow-none! border! border-slate-100!">
+              <div className="bg-white! rounded-2xl! p-6! shadow-none! border! border-slate-100!">
                 <h3 className="text-md! font-bold! text-slate-800! mb-4! flex! items-center! gap-2! border-0! m-0! p-0!">
-                <i className="fa-solid fa-credit-card text-slate-600"></i> Payment Method
+                  <i className="fa-solid fa-credit-card text-slate-600"></i> Payment Method
                 </h3>
                 <div className="space-y-3! mb-6! border-0! p-0!">
                 
-                {/* خيار الفيزا / الماستر كارد */}
-                <label 
+                  {/* خيار الفيزا / الماستر كارد */}
+                  <label 
                     className={`flex! items-center! justify-between! p-4! border! rounded-xl! cursor-pointer! transition-all! ${
-                    paymentMethod === 'card' 
+                      paymentMethod === 'card' 
                         ? 'border-emerald-600! bg-emerald-50/10!' 
                         : 'border-slate-200! hover:bg-slate-50!'
                     }`}
-                >
+                  >
                     <div className="flex! items-center! gap-3!">
-                    <input 
+                      <input 
                         type="radio" 
                         name="payment" 
                         checked={paymentMethod === 'card'} 
                         onChange={() => setPaymentMethod('card')} 
                         className="accent-emerald-600!" 
-                    />
-                    <div className="text-left!">
+                      />
+                      <div className="text-left!">
                         <p className="text-xs! sm:text-sm! font-bold! text-slate-800! m-0! p-0!">Credit / Debit Card</p>
                         <p className="text-[11px]! text-gray-400! m-0! p-0!">Pay securely with your card</p>
+                      </div>
                     </div>
-                    </div>
-                </label>
+                  </label>
 
-                {/* خيار الدفع عند الاستلام */}
-                <label 
+                  {/* خيار الدفع عند الاستلام */}
+                  <label 
                     className={`flex! items-center! justify-between! p-4! border! rounded-xl! cursor-pointer! transition-all! ${
-                    paymentMethod === 'cod' 
+                      paymentMethod === 'cod' 
                         ? 'border-emerald-600! bg-emerald-50/10!' 
                         : 'border-slate-200! hover:bg-slate-50!'
                     }`}
-                >
+                  >
                     <div className="flex! items-center! gap-3!">
-                    <input 
+                      <input 
                         type="radio" 
                         name="payment" 
                         checked={paymentMethod === 'cod'} 
                         onChange={() => setPaymentMethod('cod')} 
                         className="accent-emerald-600!" 
-                    />
-                    <div className="text-left!">
+                      />
+                      <div className="text-left!">
                         <p className="text-xs! sm:text-sm! font-bold! text-slate-800! m-0! p-0!">Cash on Delivery</p>
                         <p className="text-[11px]! text-gray-400! m-0! p-0!">Pay when you receive</p>
+                      </div>
                     </div>
-                    </div>
-                </label>
+                  </label>
 
                 </div>
                 <button 
-                onClick={() => setActiveTab('review')} 
-                className="bg-slate-900! hover:bg-slate-800! text-white! font-bold! py-3! px-6! rounded-xl! text-xs! sm:text-sm! border-0! cursor-pointer! flex! items-center! gap-2! shadow-none! transition-all!"
+                  onClick={() => setActiveTab('review')} 
+                  className="bg-slate-900! hover:bg-slate-800! text-white! font-bold! py-3! px-6! rounded-xl! text-xs! sm:text-sm! border-0! cursor-pointer! flex! items-center! gap-2! shadow-none! transition-all!"
                 >
-                Review Order <i className="fa-solid fa-arrow-right"></i>
+                  Review Order <i className="fa-solid fa-arrow-right"></i>
                 </button>
-            </div>
+              </div>
             )}
 
             {/* 3️⃣ تاب المراجعة */}
