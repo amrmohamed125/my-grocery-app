@@ -71,7 +71,7 @@ export default function Checkout() {
         </button>
         <h1 className="text-2xl! font-bold! text-slate-800! mb-6! border-0! bg-transparent! p-0! m-0!">Checkout</h1>
 
-        {/* التابس العلوية (نظام Step-by-Step) */}
+        {/* التابس العلوية */}
         <div className="flex! flex-row! gap-2! mb-8! overflow-x-auto! pb-2! border-0! bg-transparent!">
           {tabs.map((tab) => {
             const isCurrent = activeTab === tab.id;
